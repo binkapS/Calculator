@@ -2,8 +2,8 @@ import 'package:calculator/config/color.dart';
 import 'package:calculator/config/key.dart';
 import 'package:calculator/validation/evaluate.dart';
 import 'package:calculator/validation/input.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
@@ -29,6 +29,9 @@ class CalculatorScreenState extends State<CalculatorScreen> {
 
   void setThemeData({required bool dark}) {
     _colors = dark ? BrightColors() : DarkColors();
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        statusBarColor: _colors.mainBackgroundColor,
+        systemNavigationBarColor: _colors.mainBackgroundColor));
   }
 
   void updateResult({required String val}) {
@@ -42,14 +45,23 @@ class CalculatorScreenState extends State<CalculatorScreen> {
         reset();
         break;
       default:
-        if (Validation.logicKey(value: logic)) {
+        if (Validation.logicKey(value: _controller.text.trim(), key: logic)) {
           padString(addition: logic);
+        } else {
+          if (Validation.lastIsOperator(value: logic) &&
+              !Validation.operatorShouldNotBeAtStart(key: logic)) {
+            replaceString(replacement: logic);
+          }
+          if (_controller.text.trim().length > 1 &&
+              Validation.lastIsOperator(value: logic)) {
+            replaceString(replacement: logic);
+          }
         }
     }
   }
 
   void inputButtonClicked({required String input}) {
-    if (Validation.inputKey(value: input)) {
+    if (Validation.inputKey(value: _controller.text.trim(), key: input)) {
       padString(addition: input);
     }
   }
@@ -67,9 +79,17 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     }
   }
 
+  void replaceString({required String replacement}) {
+    popString();
+    padString(addition: replacement);
+  }
+
   void evaluate() {
+    if (Validation.lastIsOperator(value: _controller.text.trim())) {
+      popString();
+    }
     updateResult(
-      val: CustomMath.evalaute(expression: _controller.text),
+      val: CustomMath.evaluate(expression: _controller.text),
     );
   }
 
@@ -115,9 +135,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
                 GestureDetector(
                   onTap: updateThemeColors,
                   child: Icon(
-                    darkTheme
-                        ? CupertinoIcons.sun_max_fill
-                        : CupertinoIcons.moon_stars_fill,
+                    darkTheme ? Icons.light_mode : Icons.dark_mode_rounded,
                     color: _colors.mainIconTextColor,
                   ),
                 ),
@@ -147,7 +165,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
                       keyboardType: TextInputType.none,
                       style: TextStyle(
                         color: _colors.mainIconTextColor,
-                        fontSize: 25,
+                        fontSize: 35,
                         fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.right,
@@ -163,7 +181,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
                       result,
                       style: TextStyle(
                         color: _colors.mainIconTextColor,
-                        fontSize: 35,
+                        fontSize: 50,
                         fontWeight: FontWeight.w500,
                       ),
                       textAlign: TextAlign.right,
