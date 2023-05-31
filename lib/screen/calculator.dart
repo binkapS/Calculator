@@ -85,7 +85,8 @@ class CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   void evaluate() {
-    if (Validation.lastIsOperator(value: _controller.text.trim())) {
+    if (Validation.lastIsOperator(value: _controller.text.trim()) ||
+        Validation.lastIsDot(value: _controller.text.trim())) {
       popString();
     }
     updateResult(

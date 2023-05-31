@@ -3,7 +3,7 @@ flutter_native_splash:
   # with background color and splash image.
   # Customize the parameters below, and run the following command in the terminal:
   # flutter pub run flutter_native_splash:create
-  # To restore Flutter's default white splash screen, run the following command in the terminal:
+  # To restore Flutter's default white splash screen, runthe following command in the terminal:
   # flutter pub run flutter_native_splash:remove
 
   # color or background_image is the only required parameter.  Use color to set the background
@@ -82,10 +82,10 @@ flutter_native_splash:
   color_dark_ios: "#000f1c"
   #color_web: "#fcfcfc"
   #color_dark_web: "#000f1c"
-  # image_android: assets/logo.png
-  # image_dark_android: assets/logo_.png
-  # image_ios: assets/logo.png
-  # image_dark_ios: assets/logo_.png
+  image_android: assets/logo.png
+  image_dark_android: assets/logo_.png
+  image_ios: assets/logo.png
+  image_dark_ios: assets/logo_.png
   #image_web: assets/splash-web.gif
   #image_dark_web: assets/splash-invert-web.gif
   #background_image_android: "assets/background-android.png"
@@ -94,10 +94,10 @@ flutter_native_splash:
   #background_image_dark_ios: "assets/dark-background-ios.png"
   #background_image_web: "assets/background-web.png"
   #background_image_dark_web: "assets/dark-background-web.png"
-  branding_android: assets/logo.png
-  branding_dark_android: assets/logo_.png
-  branding_ios: assets/logo.png
-  branding_dark_ios: assets/logo_.png
+  # branding_android: assets/logo.png
+  # branding_dark_android: assets/logo_.png
+  # branding_ios: assets/logo.png
+  # branding_dark_ios: assets/logo_.png
 
   # The position of the splash image can be set with android_gravity, ios_content_mode, and
   # web_image_mode parameters.  All default to center.

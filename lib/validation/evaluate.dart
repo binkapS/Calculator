@@ -3,6 +3,9 @@ import 'package:function_tree/function_tree.dart';
 
 final class CustomMath {
   static String evaluate({required String expression}) {
+    if (expression.isEmpty) {
+      return '0';
+    }
     if (expression.contains(LogicKey.percentage)) {
       return evalReturnvalue(
           expression: evalPercentage(

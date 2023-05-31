@@ -40,6 +40,10 @@ final class Validation {
         (last == LogicKey.percentage);
   }
 
+  static bool lastIsDot({required String value}) {
+    return value[value.length - 1] == '.';
+  }
+
   static RegExp operatorRegExp() {
     return RegExp(
         // ignore: unnecessary_string_escapes
