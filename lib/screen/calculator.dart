@@ -1,4 +1,7 @@
 import 'package:calculator/config/color.dart';
+import 'package:calculator/config/key.dart';
+import 'package:calculator/validation/evaluate.dart';
+import 'package:calculator/validation/input.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,20 +9,76 @@ class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
 
   @override
-  State<CalculatorScreen> createState() => _CalculatorScreenState();
+  State<CalculatorScreen> createState() => CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen> {
-  bool darkTheme = false;
-  late CalcColors _colors = BrightColors();
+class CalculatorScreenState extends State<CalculatorScreen> {
+  bool darkTheme = true;
 
-  final TextEditingController _controller =
-      TextEditingController(text: '20+20');
+  late CalcColors _colors = DarkColors();
+
+  String result = '';
+
+  final TextEditingController _controller = TextEditingController();
 
   void updateThemeColors() {
-    _colors = darkTheme ? BrightColors() : DarkColors();
+    setThemeData(dark: darkTheme);
     darkTheme = !darkTheme;
     refresh();
+  }
+
+  void setThemeData({required bool dark}) {
+    _colors = dark ? BrightColors() : DarkColors();
+  }
+
+  void updateResult({required String val}) {
+    result = val;
+    refresh();
+  }
+
+  void logicButtonClicked({required String logic}) {
+    switch (logic) {
+      case LogicKey.reset:
+        reset();
+        break;
+      default:
+        if (Validation.logicKey(value: logic)) {
+          padString(addition: logic);
+        }
+    }
+  }
+
+  void inputButtonClicked({required String input}) {
+    if (Validation.inputKey(value: input)) {
+      padString(addition: input);
+    }
+  }
+
+  void padString({required String addition}) {
+    _controller.value =
+        _controller.value.copyWith(text: _controller.text + addition);
+  }
+
+  void popString() {
+    if (_controller.text.isNotEmpty) {
+      _controller.value = _controller.value.copyWith(
+        text: _controller.text.substring(0, _controller.text.length - 1),
+      );
+    }
+  }
+
+  void evaluate() {
+    updateResult(
+      val: CustomMath.evalaute(expression: _controller.text),
+    );
+  }
+
+  void reset() {
+    _controller.clear();
+    if (result != '') {
+      result = '';
+      refresh();
+    }
   }
 
   void refresh() {
@@ -101,7 +160,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       ),
                     ),
                     Text(
-                      '40',
+                      result,
                       style: TextStyle(
                         color: _colors.mainIconTextColor,
                         fontSize: 35,
@@ -133,9 +192,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        calLogicButton(content: 'C'),
+                        calLogicButton(content: LogicKey.reset),
                         Expanded(
                           child: GestureDetector(
+                            onTap: popString,
                             child: Container(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 5,
@@ -158,8 +218,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             ),
                           ),
                         ),
-                        calLogicButton(content: '%'),
-                        calLogicButton(content: '×'),
+                        calLogicButton(content: LogicKey.percentage),
+                        calLogicButton(content: LogicKey.division),
                       ],
                     ),
                     const SizedBox(
@@ -172,7 +232,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         calInputButton(content: '7'),
                         calInputButton(content: '8'),
                         calInputButton(content: '9'),
-                        calLogicButton(content: '÷'),
+                        calLogicButton(content: LogicKey.multiplication),
                       ],
                     ),
                     const SizedBox(
@@ -185,7 +245,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         calInputButton(content: '4'),
                         calInputButton(content: '5'),
                         calInputButton(content: '6'),
-                        calLogicButton(content: '-'),
+                        calLogicButton(content: LogicKey.substraction),
                       ],
                     ),
                     const SizedBox(
@@ -198,7 +258,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         calInputButton(content: '1'),
                         calInputButton(content: '2'),
                         calInputButton(content: '3'),
-                        calLogicButton(content: '+'),
+                        calLogicButton(content: LogicKey.addition),
                       ],
                     ),
                     const SizedBox(
@@ -212,6 +272,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                         calInputButton(content: '0'),
                         Expanded(
                           child: GestureDetector(
+                            onTap: evaluate,
                             child: Container(
                               margin: const EdgeInsets.symmetric(
                                 horizontal: 5,
@@ -227,7 +288,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 vertical: 13,
                               ),
                               child: const Text(
-                                '=',
+                                LogicKey.equals,
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 20,
@@ -254,6 +315,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return calCButton(
       content: content,
       color: _colors.mainSubmitColor,
+      action: () => logicButtonClicked(logic: content),
     );
   }
 
@@ -261,12 +323,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return calCButton(
       content: content,
       color: _colors.mainIconTextColor,
+      action: () => inputButtonClicked(input: content),
     );
   }
 
-  Widget calCButton({required String content, required Color color}) {
+  Widget calCButton({
+    required String content,
+    required Color color,
+    required Function() action,
+  }) {
     return Expanded(
       child: GestureDetector(
+        onTap: action,
         child: Container(
           margin: const EdgeInsets.symmetric(
             horizontal: 5,
