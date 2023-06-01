@@ -1,4 +1,4 @@
-package com.binkap.apps.calculator.calculator
+package com.binkap.apps.calculator
 
 import io.flutter.embedding.android.FlutterActivity
 

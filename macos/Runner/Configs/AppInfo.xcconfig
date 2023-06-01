@@ -8,7 +8,7 @@
 PRODUCT_NAME = calculator
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.binkap.apps.calculator.calculator
+PRODUCT_BUNDLE_IDENTIFIER = com.binkap.apps.calculator
 
 // The copyright displayed in application information
 PRODUCT_COPYRIGHT = Copyright © 2023 com.binkap.apps.calculator. All rights reserved.
