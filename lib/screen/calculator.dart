@@ -1,5 +1,7 @@
 import 'package:calculator/config/color.dart';
 import 'package:calculator/config/key.dart';
+import 'package:calculator/config/theme.dart';
+import 'package:calculator/storage/storage.dart';
 import 'package:calculator/validation/evaluate.dart';
 import 'package:calculator/validation/input.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,7 @@ class CalculatorScreen extends StatefulWidget {
 }
 
 class CalculatorScreenState extends State<CalculatorScreen> {
-  bool darkTheme = true;
+  bool darkTheme = (Storage.instance.theme() == AppTheme.darkTheme);
 
   late CalcColors _colors = DarkColors();
 
@@ -24,6 +26,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
   void updateThemeColors() {
     setThemeData(dark: darkTheme);
     darkTheme = !darkTheme;
+    Storage.instance.box.put('theme', darkTheme? AppTheme.darkTheme : AppTheme.lightTheme);
     refresh();
   }
 

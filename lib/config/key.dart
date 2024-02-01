@@ -10,7 +10,3 @@ final class LogicKey {
   static const String divisionOperator = '/';
   static const String multiplicationOperator = '*';
 }
-
-final class CalcKey {
-  static const String prefKey = 'com.binkap.apps.calculator.THEMEDATA';
-}
