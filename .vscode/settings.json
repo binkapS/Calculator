@@ -1,3 +1,6 @@
 {
-    "IDX.aI.enableInlineCompletion": true
+    "IDX.aI.enableInlineCompletion": true,
+    "IDX.aI.actionsInChatApiKey": "AIzaSyBzGkavZneFL9mVQDRbne4Of6AZC1i-7mg",
+    "IDX.aI.enableActionsInChat": true,
+    "IDX.aI.enableCodebaseIndexing": true
 }
